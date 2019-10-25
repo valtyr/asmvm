@@ -9,7 +9,7 @@ A simple assembler is provided to generate machine code.
 
 ### Instructions
 
-| Instruction      | DESCRIPTION                                      |
+| Instruction      | Description                                      |
 |-                 |-                                                 |
 | `hlt`            | Halts execution                                  |
 | `load r i`       | Loads value `i` into `r`                         |
@@ -30,5 +30,6 @@ A simple assembler is provided to generate machine code.
 | `nop`            | A no-op                                          |
 
 An integer value is denoted by a hash symbol and one or more digits (`#123`).
-A register address is denoted by a dollar symbol and a digit from 0 to 31 (\$10).
+
+A register address is denoted by a dollar symbol and a digit from 0 to 31 (`$10`).
 
