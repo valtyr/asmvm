@@ -74,7 +74,6 @@ impl VM {
             Opcode::DIV => {
                 let register1 = self.registers[self.next_8_bits() as usize];
                 let register2 = self.registers[self.next_8_bits() as usize];
-                println!("dividing {} by {}", register1, register2);
                 self.registers[self.next_8_bits() as usize] = register1 / register2;
                 self.remainder = (register1 % register2) as u32;
             }
@@ -149,6 +148,7 @@ impl VM {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::assembler::program_parsers::assemble;
 
     #[test]
     fn test_create_vm() {
@@ -378,23 +378,31 @@ mod tests {
     fn test_fib() {
         let mut test_vm = VM::new();
         test_vm.program = vec![
-            1, 0, 0, 0, //  load $0 #0
-            1, 1, 0, 1, //  load $1 #1
-            1, 2, 0, 0, //  load $2 #0
-            1, 3, 0, 0, //  load $3 #0
-            1, 4, 0, 0, //  load $4 #0   <- fjöldi ítrana
-            1, 5, 0, 1, //  load $5 #1   <- tala til að incrementa með
-            1, 6, 0, 10, // load $6 #10  <- hámarksfjöldi ítrana
-            2, 1, 3, 2, //  add $1 $3 $2 <- mov 1 => 2
-            2, 0, 1, 1, //  add $0 $1 $1
-            2, 2, 3, 0, //  add $2 $3 $0 <- mov 2 => 0
-            2, 4, 5, 4, //  add $4 $5 $4 <- inc 4
-            13, 4, 6, //    lt $4 $6
-            1, 7, 0, 28, // load $7 $28
-            9, 7, //        jmpc $7
-            0, //           hlt
+            1, 0, 0, 0, //   load $0 #0
+            1, 1, 0, 1, //   load $1 #1
+            1, 2, 0, 0, //   load $2 #0
+            1, 3, 0, 0, //   load $3 #0
+            1, 4, 0, 0, //   load $4 #0   <- fjöldi ítrana
+            1, 5, 0, 1, //   load $5 #1   <- tala til að incrementa með
+            1, 6, 0, 20, //  load $6 #10  <- hámarksfjöldi ítrana
+            2, 1, 3, 2, //   add $1 $3 $2 <- mov 1 => 2
+            2, 0, 1, 1, //   add $0 $1 $1
+            2, 2, 3, 0, //   add $2 $3 $0 <- mov 2 => 0
+            2, 4, 5, 4, //   add $4 $5 $4 <- inc 4
+            13, 4, 6, //     lt $4 $6
+            1, 7, 0, 28, //  load $7 $28
+            9, 7, //         jmpc $7
+            0, //            hlt
         ];
         test_vm.run();
-        assert_eq!(test_vm.registers[1], 89);
+        assert_eq!(test_vm.registers[1], 10946);
+    }
+
+    #[test]
+    fn test_assembly_program() {
+        let mut test_vm = VM::new();
+        test_vm.program = assemble("load $0 #100\nload $1 #50\nmul $0 $1 $0\nhlt".to_string());
+        test_vm.run();
+        assert_eq!(test_vm.registers[0], 5000);
     }
 }
